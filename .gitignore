@@ -1,3 +1,20 @@
+# Ignore virtual environment
+myvenv/
+
+# Ignore Python cache
 __pycache__/
 *.pyc
-myvenv/
+*.pyo
+*.pyd
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore environment files
+.env
+*.env
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
