@@ -20,11 +20,18 @@ class BookCreate(BaseModel):
     PAGES: int
     language: str
 
+class BookUpdatePut(BaseModel):
+    title: str
+    author:str
+    year: int
+    pages: int
+    language: str
+
 class BookUpdate(BaseModel):
     title: Optional[str] = None
-    author:Optional[str] = None
+    author: Optional[str] = None
     year: Optional[int] = None
-    PAGES: Optional[int] = None
+    pages: Optional[int] = None
     language: Optional[str] = None
 
 class Books(BaseModel):
@@ -52,7 +59,6 @@ def get_book_by_id(id: UUID):
     book = books.get(str(id))
     if not book:
         return{"error": "Book not found"}
-    
     return book
 
 
@@ -68,7 +74,20 @@ def add_book(book_in: BookCreate):
 
 
 @app.put("/books/{id}")
-def update_book(id: UUID, book_in: BookUpdate):
+def update_book(id: UUID, book_in: BookUpdatePut):
+    book = books.get(str(id))
+    if not book:
+        return Response(error_message="Not found")
+    
+    book_dict = book_in.model_dump()
+    for key, value in book_dict.items():
+        setattr(book, key, value)
+
+    return Response(message="Book Updated!", data=book)
+
+
+@app.patch("/books/{id}")
+def partial_book_update(id: UUID, book_in: BookUpdate):
     book = books.get(str(id))
     if not book:
         return Response(error_message="Not found")
@@ -87,7 +106,6 @@ def delete_book(id: UUID):
         return {Response(error_message="Not found")}
     
     del books[book.id]
-
     return Response(message="Book Deleted!")
 
 
